@@ -6,6 +6,7 @@
 */
 
 #include "Error.hpp"
+#include "Usage.hpp"
 #include <iostream>
 
 static bool check_arguments(int ac, char **av)
@@ -28,6 +29,10 @@ static bool check_arguments(int ac, char **av)
 
 int main(int ac, char **av)
 {
+    if (ac == 2 && av[1] == std::string("-h")) {
+        std::cout << HELP_USAGE << std::endl;
+        return 0;
+    }
     if (!check_arguments(ac, av))
         return 84;
     return 0;

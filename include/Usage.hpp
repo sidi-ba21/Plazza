@@ -11,10 +11,10 @@
     #define HELP_USAGE "USAGE:\n\t./plazza [Multiplier] [Cooks] [Time]\n"\
         "DESCRIPTION:\n\tMultiplier\t: multiplies "\
         "the cooking time of the pizzas (must be a positive number)\n"\
-        "\tCooks\t: number of cooks per kitchen "\
+        "\tCooks\t\t: number of cooks per kitchen "\
         "(must be a positive number)\n"\
-        "\tTime\t: the time in milliseconds, "\
+        "\tTime\t\t: the time in milliseconds, "\
         "used by the kitchen stock to replace ingredients "\
-        "(must be a positive number)\n"
+        "(must be a positive number)"
 
 #endif /* !USAGE_HPP_ */
