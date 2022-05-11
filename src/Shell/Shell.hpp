@@ -13,6 +13,9 @@ class Shell {
         Shell();
         ~Shell();
         void run();
+        int getType(){return _type;};
+        int getSize(){return _size;};
+        int getNumber(){return _number;};
     private:
         int _type;
         int _size;
