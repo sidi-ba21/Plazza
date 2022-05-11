@@ -8,6 +8,8 @@
 #ifndef SHELL_H
 #define SHELL_H
 
+#include "enum.hpp"
+
 class Shell {
     public:
         Shell();
