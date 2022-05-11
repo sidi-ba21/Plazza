@@ -5,7 +5,9 @@
 ## Makefile
 ##
 
-SRC		=	src/main.cpp \
+SRC		=	src/main.cpp				\
+			src/Shell/Shell.cpp			\
+			src/Plazza/Plazza.cpp		\
 
 CXXFLAGS	=	-std=c++20 -Wall -Wextra -pthread -I include
 
