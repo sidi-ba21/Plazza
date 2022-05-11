@@ -20,6 +20,21 @@ Plazza::~Plazza()
 {
 }
 
+float Plazza::get_multiplier(void)
+{
+    return (_multiplier);
+}
+
+int Plazza::get_cooks(void)
+{
+    return (_cooks);
+}
+
+int Plazza::get_pizza_time(void)
+{
+    return (_pizzaTime);
+}
+
 void Plazza::run(void)
 {
     _shell.run();

@@ -14,6 +14,9 @@ class Plazza {
     public:
         Plazza(int ac, char **av);
         ~Plazza();
+        float get_multiplier(void);
+        int get_cooks(void);
+        int get_pizza_time(void);
         void run();
     protected:
     private:
