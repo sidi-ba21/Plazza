@@ -7,6 +7,8 @@
 
 #include "Error.hpp"
 #include "Usage.hpp"
+#include "Plazza/Plazza.hpp"
+
 #include <iostream>
 
 static bool check_arguments(int ac, char **av)
@@ -35,5 +37,9 @@ int main(int ac, char **av)
     }
     if (!check_arguments(ac, av))
         return 84;
+
+    Plazza plazza(ac, av);
+//    plazza.run();
+    shell_run(&plazza);
     return 0;
 }
