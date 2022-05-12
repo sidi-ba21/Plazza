@@ -54,4 +54,11 @@ class ErrorTime : public Error
         ErrorTime(): Error(_message) {};
 };
 
+class InvalidCmd : public Error
+{
+    public:
+        const std::string _message { "Invalid command.\n" };
+        InvalidCmd(): Error(_message) {};
+};
+
 #endif /* !ERROR_HPP_ */
