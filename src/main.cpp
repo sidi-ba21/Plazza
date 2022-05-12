@@ -38,8 +38,7 @@ int main(int ac, char **av)
     if (!check_arguments(ac, av))
         return 84;
 
-    Plazza plazza(ac, av);
-//    plazza.run();
-    shell_run(&plazza);
+    Plz::Plazza plazza(ac, av);
+    plazza.run();
     return 0;
 }

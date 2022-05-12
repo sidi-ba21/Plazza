@@ -24,4 +24,6 @@ Plz::Plazza::~Plazza()
 void Plz::Plazza::run(void)
 {
     running = true;
+    pthread_create(&_thread, NULL, Plz::shell_run, this);
+    while (1){}
 }
