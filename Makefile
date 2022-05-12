@@ -9,9 +9,11 @@ SRC		=	src/main.cpp				\
 			src/Shell/Shell.cpp			\
 			src/Plazza/Plazza.cpp		\
 
-CXXFLAGS	=	-std=c++20 -Wall -Wextra -pthread -I include
+CXXFLAGS	=	-std=c++20 -Wall -Wextra -I include
 
 OBJ		=	$(SRC:.cpp=.o)
+
+LIB		=	-pthread
 
 NAME	=	plazza
 

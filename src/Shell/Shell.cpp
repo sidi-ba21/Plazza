@@ -25,9 +25,19 @@ std::vector<std::string> split(const std::string &str, char delim)
 void Plz::Shell::checkCmd(const std::string &cmd)
 {
     auto args = split(cmd, ' ');
-    if (args.size() !=3)
+
+    if (args.size() !=3 || pizza_types.find(args[0]) == pizza_types.end()
+    || pizza_sizes.find(args[1]) == pizza_sizes.end() || args[2][0] != 'x')
         throw InvalidCmd();
-    if (args[0] != )
+    try {
+        int n = std::stoi(args[2].substr(1));
+        if (n <= 0)
+            throw InvalidCmd();
+        for (int i = 0; i < n; i++)
+            fill_orders(pizza_types[args[0]], pizza_sizes[args[1]]);
+    } catch (...) {
+        throw InvalidCmd();
+    }
 }
 
 void Plz::Shell::getCmds(const std::string &line)
@@ -36,14 +46,26 @@ void Plz::Shell::getCmds(const std::string &line)
 
     for (auto &cmd : all_cmds) {
         std::cout << cmd << std::endl;
-        check_cmd(cmd);
+        checkCmd(cmd);
     }
 }
 
-/*
-void *shell_run(void *plazza)
+void Plz::Shell::fill_orders(const PizzaType &type, const PizzaSize &size)
 {
-    Plazza *plz = (Plazza *)plazza;
+    if (type == REGINA)
+        _orders.push_back(std::make_shared<regina>(size));
+    else if (type == MARGARITA)
+        _orders.push_back(std::make_shared<margarita>(size));
+    else if (type == AMERICANA)
+        _orders.push_back(std::make_shared<americana>(size));
+    else if (type == FANTASIA)
+        _orders.push_back(std::make_shared<fantasia>(size));
+}
+
+void *Plz::shell_run(void *plazza)
+{
+    Plz::Plazza *plz = (Plz::Plazza *)plazza;
+    Plz::Shell _shell;
 
     while (plz->running) {
         std::cout << "> " << std::flush;
@@ -57,8 +79,12 @@ void *shell_run(void *plazza)
         else if (line.compare("exit") == 0)
             plz->running = false;
         else {
-            std::cout << "Invalid command. try 'help'" << std::endl;
+            try {
+                _shell.getCmds(line);
+            } catch (InvalidCmd &e) {
+                std::cout << "Invalid command" << std::endl;
+            }
         }
     }
     return (NULL);
-}*/
+}

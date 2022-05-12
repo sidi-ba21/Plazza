@@ -10,7 +10,8 @@
 
     #include <memory>
     #include <vector>
-    #include "../Pizza/IPizza.hpp"
+    #include "../Pizza/Pizza.hpp"
+
 namespace Plz {
 
     class Shell {
@@ -20,12 +21,11 @@ namespace Plz {
             void getCmds(const std::string &line);
             void checkCmd(const std::string &cmd);
             void fill_orders(const PizzaType &type, const PizzaSize &size);
-            void *shell_run(void *plazza);
 
         private:
             std::vector<std::shared_ptr<IPizza>> _orders {};
     };
-
+    void *shell_run(void *plazza);
 };
 
 #endif /* !SHELL_H */
