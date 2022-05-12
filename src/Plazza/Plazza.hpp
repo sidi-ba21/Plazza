@@ -25,6 +25,9 @@ namespace Plz {
             void loadOrders();
             void updateOrders();
             bool readyOrder();
+            float get_multiplier(void);
+            int get_cooks(void);
+            int get_pizza_time(void);
 
 
         public:

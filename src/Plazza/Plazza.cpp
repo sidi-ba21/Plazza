@@ -21,6 +21,21 @@ Plz::Plazza::~Plazza()
 {
 }
 
+float Plz::Plazza::get_multiplier(void)
+{
+    return (_multiplier);
+}
+
+int Plz::Plazza::get_cooks(void)
+{
+    return (_cooks);
+}
+
+int Plz::Plazza::get_pizza_time(void)
+{
+    return (_pizzaTime);
+}
+
 void Plz::Plazza::run(void)
 {
     running = true;
