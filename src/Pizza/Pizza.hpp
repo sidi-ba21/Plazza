@@ -14,12 +14,12 @@ namespace Plz {
     class regina : public IPizza {
         public:
             regina(const PizzaSize &size) {
-                _type = PizzaType::Regina;
+                _type = PizzaType::REGINA;
                 _size = size;
                 _time = 2;
                 _ingredients.insert(_ingredients.end(),
-                Plz::pizza_ingredients[Regina].begin(),
-                Plz::pizza_ingredients[Regina].begin());
+                Plz::pizza_ingredients[REGINA].begin(),
+                Plz::pizza_ingredients[REGINA].begin());
             };
             ~regina() override = default;
     };
@@ -27,12 +27,12 @@ namespace Plz {
     class margarita : public IPizza {
         public:
             margarita(const PizzaSize &size) {
-                _type = PizzaType::Margarita;
+                _type = PizzaType::MARGARITA;
                 _size = size;
                 _time = 1;
                 _ingredients.insert(_ingredients.end(),
-                Plz::pizza_ingredients[Margarita].begin(),
-                Plz::pizza_ingredients[Margarita].begin());
+                Plz::pizza_ingredients[MARGARITA].begin(),
+                Plz::pizza_ingredients[MARGARITA].begin());
             };
             ~margarita() override = default;
     };
@@ -40,12 +40,12 @@ namespace Plz {
     class americana : public IPizza {
         public:
             americana(const PizzaSize &size) {
-                _type = PizzaType::Americana;
+                _type = PizzaType::AMERICANA;
                 _size = size;
                 _time = 2;
                 _ingredients.insert(_ingredients.end(),
-                Plz::pizza_ingredients[Americana].begin(),
-                Plz::pizza_ingredients[Americana].begin());
+                Plz::pizza_ingredients[AMERICANA].begin(),
+                Plz::pizza_ingredients[AMERICANA].begin());
             };
             ~americana() override = default;
     };
@@ -53,12 +53,12 @@ namespace Plz {
     class fantasia : public IPizza {
         public:
             fantasia(const PizzaSize &size) {
-                _type = PizzaType::Fantasia;
+                _type = PizzaType::FANTASIA;
                 _size = size;
                 _time = 4;
                 _ingredients.insert(_ingredients.end(),
-                Plz::pizza_ingredients[Fantasia].begin(),
-                Plz::pizza_ingredients[Fantasia].begin());
+                Plz::pizza_ingredients[FANTASIA].begin(),
+                Plz::pizza_ingredients[FANTASIA].begin());
             };
             ~fantasia() override = default;
     };
