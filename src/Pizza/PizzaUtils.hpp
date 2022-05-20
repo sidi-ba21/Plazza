@@ -67,6 +67,21 @@ namespace Plz {
         {"fantasia", PizzaType::FANTASIA}
     };
 
+    inline std::map<PizzaType, std::string> pizza_names {
+        {PizzaType::REGINA, "regina"},
+        {PizzaType::MARGARITA, "margarita"},
+        {PizzaType::AMERICANA, "americana"},
+        {PizzaType::FANTASIA, "fantasia"}
+    };
+
+    inline std::map<PizzaSize, std::string> pizza_str_size {
+        {PizzaSize::S, "S"},
+        {PizzaSize::M, "M"},
+        {PizzaSize::L, "L"},
+        {PizzaSize::XL, "XL"},
+        {PizzaSize::XXL, "XXL"}
+    };
+
     inline std::map<std::string, PizzaSize> pizza_sizes {
         {"S", PizzaSize::S},
         {"M", PizzaSize::M},

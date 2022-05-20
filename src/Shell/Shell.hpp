@@ -5,27 +5,33 @@
 ** shell loop display
 */
 
+#pragma once
+
 #ifndef SHELL_H
     #define SHELL_H
 
     #include <memory>
+    #include <utility>
     #include <vector>
-    #include "../Pizza/Pizza.hpp"
+    #include "../Plazza/Plazza.hpp"
+    #include "../Reception/Reception.hpp"
 
 namespace Plz {
 
     class Shell {
         public:
-            Shell() = default;
+            Shell(int ac, char **av) {
+                _plazza = std::make_unique<Plz::Plazza>(ac, av);
+                 shell_run(); 
+            };
             ~Shell() = default;
             void getCmds(const std::string &line);
-            void checkCmd(const std::string &cmd);
-            void fill_orders(const PizzaType &type, const PizzaSize &size);
+            void checkCmd(const std::string &cmd, std::shared_ptr<Plz::Command> order);
+            void shell_run();
 
         private:
-            std::vector<std::shared_ptr<IPizza>> _orders {};
+            std::unique_ptr<Plz::Plazza> _plazza;
     };
-    void *shell_run(void *plazza);
 };
 
 #endif /* !SHELL_H */

@@ -14,7 +14,7 @@ Plz::Plazza::Plazza(int ac, char **av)
 {
     _multiplier = std::stof(av[1]);
     _cooks = std::stoi(av[2]);
-    _pizzaTime = std::stoi(av[3]);
+    _regenerationTime = std::stof(av[3]);
 }
 
 Plz::Plazza::~Plazza()
@@ -33,12 +33,13 @@ int Plz::Plazza::get_cooks(void)
 
 int Plz::Plazza::get_pizza_time(void)
 {
-    return (_pizzaTime);
+    return (_regenerationTime);
 }
 
-void Plz::Plazza::run(void)
+void Plz::Plazza::loadOrders(std::shared_ptr<Command> orders)
 {
-    running = true;
-    pthread_create(&_thread, NULL, Plz::shell_run, this);
-    while (1){}
+
+}
+void Plz::Plazza::updateOrders()
+{
 }

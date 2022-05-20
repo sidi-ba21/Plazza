@@ -7,7 +7,7 @@
 
 #include "Error.hpp"
 #include "Usage.hpp"
-#include "Plazza/Plazza.hpp"
+#include "Shell/Shell.hpp"
 
 #include <iostream>
 
@@ -38,7 +38,6 @@ int main(int ac, char **av)
     if (!check_arguments(ac, av))
         return 84;
 
-    Plz::Plazza plazza(ac, av);
-    plazza.run();
+    Plz::Shell shell(ac, av);
     return 0;
 }

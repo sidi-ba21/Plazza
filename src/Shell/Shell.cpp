@@ -5,11 +5,12 @@
 ** Shell loop display
 */
 
-#include "../Plazza/Plazza.hpp"
 #include <iostream>
 #include <sstream>
 #include <algorithm>
 #include "../Error.hpp"
+#include "Shell.hpp"
+
 
 std::vector<std::string> split(const std::string &str, char delim)
 {
@@ -22,7 +23,7 @@ std::vector<std::string> split(const std::string &str, char delim)
     return res;
 }
 
-void Plz::Shell::checkCmd(const std::string &cmd)
+void Plz::Shell::checkCmd(const std::string &cmd, std::shared_ptr<Command> order)
 {
     auto args = split(cmd, ' ');
 
@@ -34,7 +35,7 @@ void Plz::Shell::checkCmd(const std::string &cmd)
         if (n <= 0)
             throw InvalidCmd();
         for (int i = 0; i < n; i++)
-            fill_orders(pizza_types[args[0]], pizza_sizes[args[1]]);
+            order->fill_orders(pizza_types[args[0]], pizza_sizes[args[1]]);
     } catch (...) {
         throw InvalidCmd();
     }
@@ -42,32 +43,19 @@ void Plz::Shell::checkCmd(const std::string &cmd)
 
 void Plz::Shell::getCmds(const std::string &line)
 {
+    std::shared_ptr<Command> order (new Command(line, _plazza->getNewIdOrders()));
     auto all_cmds = split(line, ';');
 
     for (auto &cmd : all_cmds) {
-        std::cout << cmd << std::endl;
-        checkCmd(cmd);
+        checkCmd(cmd, order);
     }
+    std::cout << "\nOrder N°" << order->getId() << " is in preparation" << std::endl;
+    _plazza->loadOrders(order);
 }
 
-void Plz::Shell::fill_orders(const PizzaType &type, const PizzaSize &size)
+void Plz::Shell::shell_run()
 {
-    if (type == REGINA)
-        _orders.push_back(std::make_shared<regina>(size));
-    else if (type == MARGARITA)
-        _orders.push_back(std::make_shared<margarita>(size));
-    else if (type == AMERICANA)
-        _orders.push_back(std::make_shared<americana>(size));
-    else if (type == FANTASIA)
-        _orders.push_back(std::make_shared<fantasia>(size));
-}
-
-void *Plz::shell_run(void *plazza)
-{
-    Plz::Plazza *plz = (Plz::Plazza *)plazza;
-    Plz::Shell _shell;
-
-    while (plz->running) {
+    while (1) {
         std::cout << "> " << std::flush;
         std::string line;
         if (!std::getline(std::cin, line))
@@ -77,14 +65,14 @@ void *Plz::shell_run(void *plazza)
         else if (line.compare("help") == 0)
             std::cout << "help ok" << std::endl;
         else if (line.compare("exit") == 0)
-            plz->running = false;
+            break;
         else {
             try {
-                _shell.getCmds(line);
+                getCmds(line);
             } catch (InvalidCmd &e) {
                 std::cout << "Invalid command" << std::endl;
+                _plazza->eraseNewCommandId();
             }
         }
     }
-    return (NULL);
 }

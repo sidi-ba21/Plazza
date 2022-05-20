@@ -5,11 +5,14 @@
 ** Plazza
 */
 
+#pragma once
 
 #ifndef PLAZZA_H
     #define PLAZZA_H
 
-    #include "../Shell/Shell.hpp"
+    #include "../Pizza/IPizza.hpp"
+    #include "../IPC/IPC.hpp"
+    #include "../Reception/Reception.hpp"
     #include <iostream>
     #include <vector>
     #include <mutex>
@@ -20,22 +23,27 @@ namespace Plz {
         public:
             Plazza(int ac, char **av);
             ~Plazza();
-            void run();
             void display();
-            void loadOrders();
+            void loadOrders(std::shared_ptr<Command>);
             void updateOrders();
-            bool readyOrder();
+            int getNewIdOrders() {
+                nbOrders++;
+                return nbOrders;
+            };
+            void eraseNewCommandId(){ this->nbOrders--; };
             float get_multiplier(void);
             int get_cooks(void);
             int get_pizza_time(void);
 
-
         public:
-            int _multiplier;
+            float _multiplier;
             int _cooks;
-            int _pizzaTime;
-            bool running;
-            pthread_t _thread;
+            int _regenerationTime;
+            int nbOrders;
+            int nbKitchens;
+            std::unique_ptr<IPC> _msg;
+            std::vector<std::shared_ptr<Command>> commands;
+            void createKitchens();
     };
 
 };

@@ -13,7 +13,7 @@ CXXFLAGS	=	-std=c++20 -Wall -Wextra -I include
 
 OBJ		=	$(SRC:.cpp=.o)
 
-LIB		=	-pthread
+LIB		=	-pthread -lrt
 
 NAME	=	plazza
 
