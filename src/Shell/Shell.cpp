@@ -10,6 +10,8 @@
 #include <algorithm>
 #include "../Error.hpp"
 #include "Shell.hpp"
+#include <sys/select.h>
+#include <unistd.h>
 
 
 std::vector<std::string> split(const std::string &str, char delim)
@@ -53,26 +55,53 @@ void Plz::Shell::getCmds(const std::string &line)
     _plazza->loadOrders(order);
 }
 
+int Plz::Shell::userActivity()
+{
+    fd_set readfds;
+    struct timeval _wait{0, 100};
+    std::string line;
+    int activity = 0;
+    FD_ZERO(&readfds);
+    FD_SET(STDIN_FILENO, &readfds);
+    if ((activity = select(STDIN_FILENO + 1, &readfds, NULL, NULL, &_wait)) == -1) {
+        std::perror("select");
+        exit(84);
+    } else if (activity) {
+        if (FD_ISSET(STDIN_FILENO + 1, &readfds)) {
+            if (!std::getline(std::cin, line))
+                return (-1);
+            _line.assign(line);
+            return (1);
+        }
+    } else
+        _plazza->updateOrders();
+    return (0);
+}
+
 void Plz::Shell::shell_run()
 {
+    int r = 0;
+
     while (1) {
-        std::cout << "> " << std::flush;
-        std::string line;
-        if (!std::getline(std::cin, line))
+        r = userActivity();
+        if (r == -1)
             break;
-        if (line.compare("status") == 0)
-            std::cout << "status ok" << std::endl;
-        else if (line.compare("help") == 0)
-            std::cout << "help ok" << std::endl;
-        else if (line.compare("exit") == 0)
-            break;
-        else {
-            try {
-                getCmds(line);
-            } catch (InvalidCmd &e) {
-                std::cout << "Invalid command" << std::endl;
-                _plazza->eraseNewCommandId();
+        if (r) {
+            if (_line.compare("status") == 0)
+                std::cout << "status ok" << std::endl;
+            else if (_line.compare("help") == 0)
+                std::cout << "help ok" << std::endl;
+            else if (_line.compare("exit") == 0)
+                break;
+            else {
+                try {
+                    getCmds(_line);
+                } catch (InvalidCmd &e) {
+                    std::cout << "Invalid command" << std::endl;
+                    _plazza->eraseNewCommandId();
+                }
             }
+            std::cout << "> " << std::flush;
         }
     }
 }

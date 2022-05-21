@@ -20,6 +20,14 @@
 
 namespace Plz {
 
+    typedef struct Kitchen_s {
+        int nb;
+        int busy;
+        std::time_t time;
+        int freeCook;
+        bool isFree;
+    } Kitchen_t;
+
     class Cook {
         public:
             static void createCook(mqd_t send, mqd_t receive, int replace, float multiplier);

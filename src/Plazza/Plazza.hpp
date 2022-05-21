@@ -17,12 +17,14 @@
     #include <vector>
     #include <mutex>
 
+std::vector<std::string> split(const std::string &str, char delim);
+
 namespace Plz {
 
     class Plazza {
         public:
-            Plazza(int ac, char **av);
-            ~Plazza();
+            Plazza(char **av);
+            ~Plazza() = default;
             void display();
             void loadOrders(std::shared_ptr<Command>);
             void updateOrders();
@@ -34,16 +36,27 @@ namespace Plz {
             float get_multiplier(void);
             int get_cooks(void);
             int get_pizza_time(void);
-
+            void displayStatus(void);
         public:
             float _multiplier;
             int _cooks;
             int _regenerationTime;
             int nbOrders;
             int nbKitchens;
-            std::unique_ptr<IPC> _msg;
+            std::shared_ptr<IPC> _msg;
             std::vector<std::shared_ptr<Command>> commands;
-            void createKitchens();
+            std::unique_ptr<Reception> _reception;
+            std::shared_ptr<std::vector<Kitchen_t>> _kitchens;
+            int getIdCmd(int idCmd) {
+                for (int i = 0; i < commands.size(); i++) {
+                    if (commands[i]->getId() == idCmd)
+                        return i;
+                }
+                throw std::runtime_error("No command found");
+            }
+            std::pair<PizzaType, PizzaSize> decryptMsg(std::vector<std::string> arg) {
+                return std::make_pair(pizza_types[arg[0]], pizza_sizes[arg[1]]);
+            }
     };
 
 };

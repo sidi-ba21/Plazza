@@ -23,7 +23,7 @@ namespace Plz {
             IPC::recv_reception(send, buffer);
             command = buffer;
             _mutex_msg_receive.unlock();
-            if (command.compare("EXIT") == 0) {
+            if (command.compare("close") == 0) {
                 Cook::Communication(command, receive);
                 break;
             }

@@ -21,9 +21,10 @@ namespace Plz {
     class Shell {
         public:
             Shell(int ac, char **av) {
-                _plazza = std::make_unique<Plz::Plazza>(ac, av);
+                _plazza = std::make_unique<Plz::Plazza>(av);
                  shell_run(); 
             };
+            int userActivity();
             ~Shell() = default;
             void getCmds(const std::string &line);
             void checkCmd(const std::string &cmd, std::shared_ptr<Plz::Command> order);
@@ -31,6 +32,7 @@ namespace Plz {
 
         private:
             std::unique_ptr<Plz::Plazza> _plazza;
+            std::string _line;
     };
 };
 

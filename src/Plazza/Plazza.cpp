@@ -10,15 +10,15 @@
 #include <algorithm>
 #include <ctime>
 
-Plz::Plazza::Plazza(int ac, char **av)
+Plz::Plazza::Plazza(char **av)
 {
     _multiplier = std::stof(av[1]);
     _cooks = std::stoi(av[2]);
     _regenerationTime = std::stof(av[3]);
-}
-
-Plz::Plazza::~Plazza()
-{
+    _msg = std::make_unique<IPC>(IPC());
+    nbKitchens = 0;
+    nbOrders = 0;
+    _reception = std::make_unique<Reception>(Reception(_cooks, _regenerationTime, _multiplier));
 }
 
 float Plz::Plazza::get_multiplier(void)
@@ -38,8 +38,37 @@ int Plz::Plazza::get_pizza_time(void)
 
 void Plz::Plazza::loadOrders(std::shared_ptr<Command> orders)
 {
+    int idKitchen = 0;
 
+    this->commands.push_back(orders);
+    for (int i = 0; i < orders->getSize(); i++) {
+        idKitchen = _reception->getLessBusyKitchen(nbKitchens, _msg, _kitchens);
+        _kitchens->at(idKitchen).busy++;
+        this->_msg->send_Kitchen(_kitchens->at(idKitchen).nb, orders->unpack(i));
+    }
 }
 void Plz::Plazza::updateOrders()
 {
+    std::string buf;
+    int idCmd = 0;
+    int CookToFree = 0;
+
+    _reception->manageKitchen(_kitchens, _msg);
+    for (int i = 0; i < _kitchens->size(); i++) {
+        for (int j = 0; j < _kitchens->at(i).busy; j++) {
+            if (_msg->recv_Kitchen(_kitchens->at(i).nb, buf) > 0) {
+                buf = buf.substr(0, buf.length() - 3);
+                auto arg = split(buf, ' ');
+                auto pizza = decryptMsg(arg);
+                idCmd = this->getIdCmd(stoi(arg[2]));
+                CookToFree++;
+                commands[idCmd]->release(pizza.first, pizza.second);
+                _reception->notifyReadyCmds(idCmd, commands);
+            }
+        }
+        if (_kitchens->at(i).busy - CookToFree == 0 && CookToFree != 0)
+            _kitchens->at(i).time = std::time(nullptr);
+        _kitchens->at(i).busy -= CookToFree;
+        CookToFree = 0;
+    }
 }
