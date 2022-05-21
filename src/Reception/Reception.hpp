@@ -21,12 +21,9 @@ namespace Plz {
                 this->_cmd = order;
                 this->_id = id;
             };
+
             ~Command() = default;
-            bool isDone() const {
-                if (_orders.empty())
-                    return true;
-                return false;
-            };
+
             void fill_orders(const PizzaType &type, const PizzaSize &size) {
                 if (type == REGINA)
                     _orders.push_back(std::make_unique<regina>(size));
@@ -37,15 +34,20 @@ namespace Plz {
                 else if (type == FANTASIA)
                     _orders.push_back(std::make_unique<fantasia>(size));
             }
+
             int getId() const { return _id; };
+
             int getSize() const { return _orders.size(); };
+
             std::string getOrder() const { return _cmd; };
+
             std::string unpack(int i) const {
                 if ((std::size_t)i >= _orders.size())
                     return nullptr;
                 return pizza_names[_orders[i]->getType()] + " " +
                 pizza_str_size[_orders[i]->getSize()] + " " + std::to_string(_id);
             };
+
             void release(const PizzaType &type, const PizzaSize &size) {
                 for (auto it = _orders.begin(); it != _orders.end();) {
                     if ((*it)->getType() == type && (*it)->getSize() == size)
@@ -54,6 +56,12 @@ namespace Plz {
                         ++it;
                 }
             }
+
+             bool isDone() const {
+                if (_orders.empty())
+                    return true;
+                return false;
+            };
 
         private:
             int _id;

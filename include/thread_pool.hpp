@@ -30,11 +30,11 @@ namespace Plz {
                 _threads[position].join();
                 _threads.erase(_threads.begin() + position);
             }
-        void removeAll() {
-            for (auto &thread : _threads)
-                thread.join();
-            _threads.clear();
-        }
+            void joinAll() {
+                for (auto &thread : _threads)
+                    thread.join();
+                std::_Exit(0);
+            }
     };
 }
 

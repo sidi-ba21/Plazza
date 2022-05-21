@@ -8,6 +8,8 @@
 SRC		=	src/main.cpp				\
 			src/Shell/Shell.cpp			\
 			src/Plazza/Plazza.cpp		\
+			src/IPC/IPC.cpp				\
+			src/Kitchen/Kitchen.cpp		\
 
 CXXFLAGS	=	-std=c++20 -Wall -Wextra -I include
 

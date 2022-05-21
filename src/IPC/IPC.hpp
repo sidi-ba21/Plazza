@@ -19,6 +19,11 @@ namespace Plz {
 
 class IPC {
     public:
+        static void send_reception(mqd_t fd, const std::string msg);
+        static void recv_reception(mqd_t fd, std::string &msg);
+        void send_Kitchen(int id, const std::string msg);
+        int recv_Kitchen(int id, std::string &msg);
+
         IPC() { _nbQueues = 0; };
         ~IPC() { 
             for (int i = 0; i < _nbQueues; i++) {
@@ -54,7 +59,20 @@ class IPC {
         int _nbQueues;
         std::vector<std::pair<int, mqd_t>> _send;
         std::vector<std::pair<int, mqd_t>> _receive;
-        int getQueue(int id);
+        int getQueue(int id, int mode) {
+            if (mode == 1) {
+                for (std::size_t i = 0; i < _send.size(); i++) {
+                    if (_send[i].first == id)
+                        return i;
+                }
+            } else if (mode == 2) {
+                for (std::size_t i = 0; i < _receive.size(); i++) {
+                    if (_receive[i].first == id)
+                        return i;
+                }
+            }
+            throw std::runtime_error("Error: getQueue failed");
+        };
 };
 
 }

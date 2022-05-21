@@ -7,28 +7,60 @@
 
 #include "Kitchen.hpp"
 
-void Plz::Cook::push(const std::shared_ptr<Plz::IPizza> &pizza)
-{
-    _mutex.lock();
-    _orders.push_back(pizza);
-    _mutex.unlock();
-    _cookWorking++;
-}
+namespace Plz {
+    Fridge stock;
+    static std::mutex _mutex_msg_send;
+    static std::mutex _mutex_msg_receive;
+    static std::mutex _mutex_ing;
 
-std::shared_ptr<Plz::IPizza> Plz::Cook::pop()
-{
-    _mutex.lock();
-    if (_orders.empty()) {
-        _mutex.unlock();
-        return nullptr;
+    void Cook::createCook(mqd_t send, mqd_t receive, int replaceTime, float multiplier)
+    {
+        std::string command, buffer;
+        stock.setReplaceTime(replaceTime);
+
+        while (1) {
+            _mutex_msg_send.lock();
+            IPC::recv_reception(send, buffer);
+            command = buffer;
+            _mutex_msg_receive.unlock();
+            if (command.compare("EXIT") == 0) {
+                Cook::Communication(command, receive);
+                break;
+            }
+            while (!Cook::pickIngredients(Cook::getCmd(buffer)));
+            Cook::cookPizza(Cook::getCmd(buffer), multiplier);
+            Cook::Communication(command, receive);
+        }
     }
-    auto ready = _orders.back();
-    _orders.pop_back();
-    _mutex.unlock();
-    return ready;
-}
 
-void *Plz::kitchen_thread(std::shared_ptr<bool> _isWorking, Plz::Kitchen &reception, std::shared_ptr<Plz::Cook> cook)
-{
-    
+    void Cook::cookPizza(Plz::PizzaType type, float multiplier)
+    {
+        int time = Plz::pizza_time[type] * multiplier;
+        std::this_thread::sleep_for(std::chrono::milliseconds(time));
+    }
+
+    bool Cook::pickIngredients(Plz::PizzaType type)
+    {
+        bool pick = false;
+
+        _mutex_ing.lock();
+        stock.checkReplace();
+        pick = stock.getIngredient(type);
+        _mutex_ing.unlock();
+        return (pick);
+    }
+
+    Plz::PizzaType Cook::getCmd(const std::string &cmd)
+    {
+        std::string type = cmd.substr(0, cmd.find(' '));
+        return Plz::pizza_types[type];
+    }
+
+    void Cook::Communication(std::string command, mqd_t receive)
+    {
+        std::string msg(command + " OK");
+        _mutex_msg_receive.lock();
+        IPC::send_reception(receive, msg);
+        _mutex_msg_receive.unlock();
+    }
 }

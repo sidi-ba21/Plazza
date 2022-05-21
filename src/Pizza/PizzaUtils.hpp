@@ -90,6 +90,13 @@ namespace Plz {
         {"XXL", PizzaSize::XXL}
     };
 
+    inline std::map<PizzaType, int> pizza_time {
+        {PizzaType::REGINA, 2000},
+        {PizzaType::MARGARITA, 1000},
+        {PizzaType::AMERICANA, 2000},
+        {PizzaType::FANTASIA, 4000}
+    };
+
 };
 
 #endif /* !PIZZAUTILS_HPP_ */
