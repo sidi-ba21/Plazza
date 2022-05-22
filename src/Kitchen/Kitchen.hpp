@@ -45,7 +45,7 @@ namespace Plz {
                 struct mq_attr attr;
                // std::cout << "IPC open3 : " << file << std::endl;
                 attr.mq_maxmsg = 10;
-                attr.mq_msgsize = 20;
+                attr.mq_msgsize = 100;
                 _send = mq_open(file.c_str(), O_RDWR | O_CREAT, (S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH), &attr);
                 if (_send == -1) {
                     throw MsQueues("Error: mq_open failed");

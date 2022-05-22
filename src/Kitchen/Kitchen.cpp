@@ -30,7 +30,7 @@ namespace Plz {
             IPC::recv_reception(send, buffer);
             command = buffer;
             _mutex_msg_send.unlock();
- //           std::cout << "command " <<  command << std::endl;
+//            std::cout << "command " <<  command << std::endl;
             if (command.compare("close") == 0) {
                 Cook::Communication(command, receive);
                 break;
@@ -69,7 +69,7 @@ namespace Plz {
     void Cook::Communication(std::string command, mqd_t receive)
     {
         std::string msg(command + " OK");
-//         std::cout << "Sending command: " << msg << std::endl;
+//        std::cout << "Sending command: " << msg << std::endl;
         _mutex_msg_receive.lock();
         IPC::send_reception(receive, msg);
         _mutex_msg_receive.unlock();
