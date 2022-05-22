@@ -29,7 +29,7 @@ void Plz::Reception::createKitchen(std::shared_ptr<int> idKitchen, std::shared_p
     // increase by one the number of kitchens
     *idKitchen = *idKitchen + 1;
  //   printf("idKitchen: %d\n", *idKitchen);
-    Kitchen_t newKitchen {*idKitchen, 0, std::time(nullptr), 0, false};
+//    Kitchen_t newKitchen {*idKitchen, 0, std::time(nullptr), 0, false};
     kitchens->push_back({*idKitchen, 0, std::time(nullptr), 0, false});
     msg->createQueue(*idKitchen);
     pid = fork();

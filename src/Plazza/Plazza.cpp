@@ -100,6 +100,7 @@ void Plz::Plazza::displayStatus(void)
 //               ", ChiefLove: " + arg[8];
        //     break;
        // }
+       _msg->send_Kitchen(_kitchens->at(i).nb, "status" + std::to_string(i + 1));
         auto busy = _kitchens->at(i).busy >= _cooks ? _cooks : _kitchens->at(i).busy;
         auto free = _cooks - _kitchens->at(i).busy > 0 ? _cooks - _kitchens->at(i).busy : 0;
         auto pizza = _kitchens->at(i).busy > _cooks ? _kitchens->at(i).busy - _cooks : 0;

@@ -32,28 +32,26 @@ namespace Plz {
             IPC::recv_reception(send, buf);
             cmd = buf;
             _mutex_msg_send.unlock();
-//            std::cout << "cmd " <<  cmd << std::endl;
             if (cmd.compare("close") == 0) {
                 Cook::Communication(cmd, receive);
                 break;
             }
-           // _mutex_msg_send.lock();
-           // IPC::recv_S(status, str);
-           // cmd = buf;
-           // _mutex_msg_send.unlock();
-           // if (cmd.compare("status") == 0) {
-           //     // vstring with all values of stock.getStock() separated by ';'
-           //     std::string buf("");
-           //     for (auto &it : stock.getStock()) {
-           //         buf.append(std::to_string(it));
-           //         buf.append(";");
-           //     }
-           //     std::cout << "buf: " << buf << std::endl;
-           //     Cook::sendStock(buf, status);
-           //     continue;
-           // }
+            if (cmd.find("status") != std::string::npos) {
+                std::string buf("Ingredients Status Kitchens N° " + cmd.substr(6, cmd.length()) + " :");
+                auto i = 0;
+                for (auto &it : stock.getStock()) {
+                    i == 0 ? buf.append("\n\t\tDoe: ") : i == 1 ? buf.append("\n\t\tTomato: ") :
+                    i == 2 ? buf.append("\n\t\tGruyere: ") : i == 3 ? buf.append("\n\t\tHam: ") :
+                    i == 4 ? buf.append("\n\t\tMushrooms: ") : i == 5 ? buf.append("\n\t\tSteak: ") :
+                    i == 6 ? buf.append("\n\t\tEggplant: ") : i == 7 ? buf.append("\n\t\tGoatCheese: ") :
+                    i == 8 ? buf.append("\n\t\tChiefLove: ") : 0;
+                    buf.append(std::to_string(it));
+                    i++;
+                }
+                std::cout << buf << std::endl;
+                continue;
+            }
             while (!Cook::pickIngredients(Cook::getCmd(buf)));
-//             printf("Waiting for ingredients\n");
             Cook::cookPizza(Cook::getCmd(buf), multiplier);
             Cook::Communication(cmd, receive);
         }
