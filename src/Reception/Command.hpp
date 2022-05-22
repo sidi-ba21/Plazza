@@ -50,8 +50,10 @@ namespace Plz {
 
             void release(const PizzaType &type, const PizzaSize &size) {
                 for (auto it = _orders.begin(); it != _orders.end();) {
-                    if ((*it)->getType() == type && (*it)->getSize() == size)
+                    if ((*it)->getType() == type && (*it)->getSize() == size) {
                         it = _orders.erase(it);
+                        return;
+                    }
                     else
                         ++it;
                 }

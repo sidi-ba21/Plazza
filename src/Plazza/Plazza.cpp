@@ -41,6 +41,7 @@ void Plz::Plazza::loadOrders(std::shared_ptr<Command> orders)
 {
     int idKitchen = 0;
 
+//    std::cout << "size orders : " << orders->getSize() << std::endl;
     this->commands.push_back(orders);
     for (int i = 0; i < orders->getSize(); i++) {
         idKitchen = _reception->getLessBusyKitchen(nbKitchens, _msg, _kitchens);
@@ -48,6 +49,7 @@ void Plz::Plazza::loadOrders(std::shared_ptr<Command> orders)
         this->_msg->send_Kitchen(_kitchens->at(idKitchen).nb, orders->unpack(i));
     }
 }
+
 void Plz::Plazza::updateOrders()
 {
     std::string buf;
@@ -56,13 +58,17 @@ void Plz::Plazza::updateOrders()
 
     _reception->manageKitchen(_kitchens, _msg);
     for (std::size_t i = 0; i < _kitchens->size(); i++) {
+//        _msg->send_Kitchen(_kitchens->at(i).nb, "status");
         for (int j = 0; j < _kitchens->at(i).busy; j++) {
             if (_msg->recv_Kitchen(_kitchens->at(i).nb, buf) > 0) {
-                buf = buf.substr(0, buf.length() - 3);
+//                buf = buf.substr(0, buf.length() - 3);
+//                std::cout << "buf : " << buf << std::endl;
                 auto arg = split(buf, ' ');
                 auto pizza = decryptMsg(arg);
                 idCmd = this->getIdCmd(stoi(arg[2]));
                 CookToFree++;
+                // print command[idCmd] size
+//                std::cout << "Command " << idCmd << " size : " << commands[idCmd]->getSize() << std::endl;
                 commands[idCmd]->release(pizza.first, pizza.second);
                 _reception->notifyReadyCmds(idCmd, commands);
             }
@@ -76,14 +82,31 @@ void Plz::Plazza::updateOrders()
 
 void Plz::Plazza::displayStatus(void)
 {
-    if (_kitchens->size() == 0)
+    std::string buf;
+    std:: string str;
+
+    if (_kitchens->size() == 0) {
         std::cout << "There are currently no working kitchen" << std::endl;
+        return;
+    }
     for (std::size_t i = 0; i < _kitchens->size(); i++) {
+       // if (_msg->recv_Stock(_kitchens->at(i).nb, buf) > 0) {
+       //     std::cout << buf << std::endl;
+//               auto arg = split(buf, ';');
+//               str = "Doe: " + arg[0] + ", Tomato: " + arg[1] +
+//               ", Gruyere: " + arg[2] + ", Ham: " + arg[3] + ", Mushrooms: " + arg[4] +
+//               ", Steak: " + arg[5] + ", Eggplant: " + arg[6] + ", GoatCheese: " + arg[7] +
+//               ", ChiefLove: " + arg[8];
+       //     break;
+       // }
         auto busy = _kitchens->at(i).busy >= _cooks ? _cooks : _kitchens->at(i).busy;
         auto free = _cooks - _kitchens->at(i).busy > 0 ? _cooks - _kitchens->at(i).busy : 0;
+        auto pizza = _kitchens->at(i).busy > _cooks ? _kitchens->at(i).busy - _cooks : 0;
         std::cout << "Kitchen N°" << i << ":" << std::endl
+        << "    " << "Pizza waiting to be cooked :" <<  pizza << std::endl
         << "    " << "There are " << _cooks << " cooks in the kitchen" << std::endl
         << "    " << busy << " of them are busy" << std::endl
         << "    " << free << " of them are free" << std::endl;
+       // << "    " << "Fridge status: " << str << std::endl;
     }
 }

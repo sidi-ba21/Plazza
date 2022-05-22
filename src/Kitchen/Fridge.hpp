@@ -43,6 +43,8 @@ class Fridge {
             this->checkReplace();
             return true;
         }
+        // function that returns the _stock of the fridge
+        std::array<std::atomic<int>, 9> &getStock() { return this->_stock; };
 
     protected:
     private:

@@ -30,12 +30,13 @@ namespace Plz {
 
     class Cook {
         public:
-            static void cook(mqd_t send, mqd_t receive, int replaceTime, float multiplier);
-            static std::thread createCook(mqd_t send, mqd_t receive, int replace, float multiplier);
+            static void cook(mqd_t send, mqd_t receive, mqd_t status, int replaceTime, float multiplier);
+            static std::thread createCook(mqd_t send, mqd_t receive, mqd_t status, int replace, float multiplier);
             static Plz::PizzaType getCmd(const std::string &cmd);
             static bool pickIngredients(Plz::PizzaType);
             static void cookPizza(Plz::PizzaType, float multiplier);
             static void Communication(std::string command, mqd_t receive);
+            static void sendStock(std::string command, mqd_t status);
     };
 
     class Kitchen {
@@ -56,6 +57,11 @@ namespace Plz {
                 if (_receive == -1) {
                     throw MsQueues("Error: mq_open failed");
                 }
+                file.assign("/plz" + std::to_string(this->_id) + "STATUS");
+                _status = mq_open(file.c_str(), O_RDWR | O_CREAT, (S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH), &attr);
+                if (_status == -1) {
+                    throw MsQueues("Error: mq_open failed");
+                }
             }
             Kitchen(int id, int nbCooks, float multiplier, int replaceTime) {
                 _id = id;
@@ -64,8 +70,11 @@ namespace Plz {
                 nbPizza = 0;
                 initMsgQueue();
                 for (int i = 0; i < _nbCooks; i++)
-                    _pool.push_back(Plz::Cook::createCook(_send, _receive, replaceTime, _multiplier));
-                threadPool();
+                    _pool.push_back(Plz::Cook::createCook(_send, _receive, _status, replaceTime, _multiplier));
+                for (int i = 0; i < _nbCooks; i++)
+                    _pool[i].join();
+                std::_Exit(0);
+//                threadPool();
             }
             void threadPool() {
                 for (int i = 0; i < _nbCooks; i++)
@@ -82,6 +91,7 @@ namespace Plz {
             std::vector<std::thread> _pool;
             mqd_t _send;
             mqd_t _receive;
+            mqd_t _status;
     };
 }
 

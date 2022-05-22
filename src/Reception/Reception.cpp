@@ -10,6 +10,9 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
+#define RESET_COLOR "\e[m"
+#define MAKE_GREEN "\e[32m"
+
 Plz::Reception::Reception(int nbCooks, int replaceTime, float multiplier)
 {
     _nbCooks = nbCooks;
@@ -24,7 +27,7 @@ void Plz::Reception::createKitchen(std::shared_ptr<int> idKitchen, std::shared_p
     *idKitchen = *idKitchen + 1;
  //   printf("idKitchen: %d\n", *idKitchen);
     Kitchen_t newKitchen {*idKitchen, 0, std::time(nullptr), 0, false};
-    kitchens->push_back(newKitchen);
+    kitchens->push_back({*idKitchen, 0, std::time(nullptr), 0, false});
     msg->createQueue(*idKitchen);
     pid = fork();
     if (pid == 0) {
@@ -68,8 +71,8 @@ int Plz::Reception::getLessBusyKitchen(std::shared_ptr<int> idKitchen, std::shar
 void Plz::Reception::notifyReadyCmds(int idCmd, std::vector<std::shared_ptr<Command>> commands)
 {
     if (commands[idCmd]->isDone()) {
-        std::cout << "Command N°" << commands[idCmd]->getId() << ": " << commands[idCmd]->getOrder()
-        << " is done" << std::endl;
+        std::cout << MAKE_GREEN << "Command N°" << commands[idCmd]->getId() << ": " << commands[idCmd]->getOrder()
+        << " is ready" << RESET_COLOR << std::endl;
         commands.erase(commands.begin() + idCmd);
     }
 }
@@ -108,7 +111,6 @@ void Plz::Reception::manageKitchen(std::shared_ptr<std::vector<Kitchen_t>> kitch
 
     for (std::size_t i = 0; i < kitchens->size(); i++) {
         if (kitchens->at(i).busy == 0) {
-           // printf("YES_______________________\n");
             if (msg->recv_Kitchen(kitchens->at(i).nb, buf) > 0 && buf.compare("close OK") == 0) {
           //      printf("received kitchen\n");
                 kitchens->at(i).freeCook++;
