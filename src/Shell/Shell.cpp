@@ -88,7 +88,7 @@ void Plz::Shell::shell_run()
             break;
         if (r) {
             if (_line.compare("status") == 0)
-                std::cout << "status ok" << std::endl;
+                _plazza->displayStatus();
             else if (_line.compare("help") == 0)
                 std::cout << "help ok" << std::endl;
             else if (_line.compare("exit") == 0)

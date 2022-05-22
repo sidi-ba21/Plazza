@@ -57,7 +57,6 @@ void Plz::Plazza::updateOrders()
     _reception->manageKitchen(_kitchens, _msg);
     for (std::size_t i = 0; i < _kitchens->size(); i++) {
         for (int j = 0; j < _kitchens->at(i).busy; j++) {
-            //printf("ok________________\n");
             if (_msg->recv_Kitchen(_kitchens->at(i).nb, buf) > 0) {
                 buf = buf.substr(0, buf.length() - 3);
                 auto arg = split(buf, ' ');
@@ -72,5 +71,17 @@ void Plz::Plazza::updateOrders()
             _kitchens->at(i).time = std::time(nullptr);
         _kitchens->at(i).busy -= CookToFree;
         CookToFree = 0;
+    }
+}
+
+void Plz::Plazza::displayStatus(void)
+{
+    if (_kitchens->size() == 0)
+        std::cout << "There are currently no working kitchen" << std::endl;
+    for (std::size_t i = 0; i < _kitchens->size(); i++) {
+        std::cout << "Kitchen N°" << i << ":" << std::endl
+        << "    " << "There are " << _cooks << " cooks in the kitchen" << std::endl
+        << "    " << _kitchens->at(i).busy << " of them are busy" << std::endl
+        << "    " << _cooks - _kitchens->at(i).busy << " of them are free" << std::endl;
     }
 }
