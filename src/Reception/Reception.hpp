@@ -20,8 +20,8 @@ namespace Plz {
         public:
             Reception(int nbCooks, int replaceTime, float multiplier);
             ~Reception() = default;
-            void createKitchen(int idKitchen, std::shared_ptr<IPC>, std::shared_ptr<std::vector<Kitchen_t>>);
-            int getLessBusyKitchen(int idKitchen, std::shared_ptr<IPC>, std::shared_ptr<std::vector<Kitchen_t>>);
+            void createKitchen(std::shared_ptr<int> idKitchen, std::shared_ptr<IPC>, std::shared_ptr<std::vector<Kitchen_t>>);
+            int getLessBusyKitchen(std::shared_ptr<int> idKitchen, std::shared_ptr<IPC>, std::shared_ptr<std::vector<Kitchen_t>>);
             bool setLessBusy(int *less, std::shared_ptr<std::vector<Kitchen_t>> kitchens);
             void notifyReadyCmds(int idCmd, std::vector<std::shared_ptr<Command>>);
             void manageKitchen(std::shared_ptr<std::vector<Kitchen_t>>, std::shared_ptr<IPC>);

@@ -12,6 +12,7 @@
 #include <mqueue.h>
 #include <time.h>
 #include <iostream>
+#include "../Error.hpp"
 
     #define PMODE 0666
 
@@ -36,21 +37,21 @@ class IPC {
         void createQueue(int idKitchen) {
             mqd_t queue;
             struct mq_attr attr;
-            std::string file("/plazza/plz_send" + std::to_string(this->_nbQueues + 1));
-            std::cout << "IPC open" << std::endl;
+            std::string file("/plz" + std::to_string(this->_nbQueues + 1) + "SEND");
+            std::cout << "IPC open : " << file << std::endl;
             attr.mq_maxmsg = 10;
             attr.mq_msgsize = 20;
             mq_unlink(file.c_str());
             queue = mq_open(file.c_str(), O_RDWR | O_CREAT, (S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH), &attr);
             if (queue == -1)
-                throw std::runtime_error("Error: mq_open failed");
+                throw MsQueues("Error: mq_open failed");
             _send.push_back(std::make_pair(idKitchen, queue));
-            std::cout << "IPC open2" << std::endl;
-            file.assign("/plazza/plz_receive" + std::to_string(this->_nbQueues + 1));
+            file.assign("/plz" + std::to_string(this->_nbQueues + 1) + "RECEIVE");
+            std::cout << "IPC open2 : " << file << std::endl;
             mq_unlink(file.c_str());
             queue = mq_open(file.c_str(), O_RDWR | O_CREAT | O_NONBLOCK, (S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH), &attr);
             if (queue == -1)
-                throw std::runtime_error("Error: mq_open failed");
+                throw MsQueues("Error: mq_open failed");
             _receive.push_back(std::make_pair(idKitchen, queue));
             this->_nbQueues++;
         };
@@ -72,7 +73,7 @@ class IPC {
                         return i;
                 }
             }
-            throw std::runtime_error("Error: getQueue failed");
+            throw MsQueues("Error: getQueue failed");
         };
 };
 

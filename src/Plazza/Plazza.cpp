@@ -17,7 +17,7 @@ Plz::Plazza::Plazza(char **av)
     _regenerationTime = std::stof(av[3]);
     _msg = std::make_unique<IPC>(IPC());
     _kitchens = std::make_shared<std::vector<Kitchen_t>>();
-    nbKitchens = 0;
+    nbKitchens = std::make_shared<int>(0);
     nbOrders = 0;
     _reception = std::make_unique<Reception>(Reception(_cooks, _regenerationTime, _multiplier));
 }
@@ -57,6 +57,7 @@ void Plz::Plazza::updateOrders()
     _reception->manageKitchen(_kitchens, _msg);
     for (std::size_t i = 0; i < _kitchens->size(); i++) {
         for (int j = 0; j < _kitchens->at(i).busy; j++) {
+            //printf("ok________________\n");
             if (_msg->recv_Kitchen(_kitchens->at(i).nb, buf) > 0) {
                 buf = buf.substr(0, buf.length() - 3);
                 auto arg = split(buf, ' ');

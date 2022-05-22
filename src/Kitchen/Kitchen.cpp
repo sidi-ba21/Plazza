@@ -17,7 +17,7 @@ namespace Plz {
     {
         std::string command, buffer;
         stock.setReplaceTime(replaceTime);
-
+        printf("_______________Cook created\n");
         while (1) {
             _mutex_msg_send.lock();
             IPC::recv_reception(send, buffer);

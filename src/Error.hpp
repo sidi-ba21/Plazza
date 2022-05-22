@@ -19,7 +19,7 @@ class Error : public std::exception
 
         char const *what() const noexcept { return _message.c_str(); }
 
-    private:
+    protected:
         std::string _message;
 };
 
@@ -59,6 +59,12 @@ class InvalidCmd : public Error
     public:
         const std::string _message { "Invalid command.\n" };
         InvalidCmd(): Error(_message) {};
+};
+
+class MsQueues : public Error
+{
+    public:
+        MsQueues(const std::string &message) noexcept : Error(message) {}
 };
 
 #endif /* !ERROR_HPP_ */

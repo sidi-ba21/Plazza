@@ -42,7 +42,7 @@ namespace Plz {
             int _cooks;
             int _regenerationTime;
             int nbOrders;
-            int nbKitchens;
+            std::shared_ptr<int> nbKitchens;
             std::shared_ptr<IPC> _msg;
             std::vector<std::shared_ptr<Command>> commands;
             std::unique_ptr<Reception> _reception;

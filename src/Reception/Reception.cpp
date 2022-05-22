@@ -17,16 +17,17 @@ Plz::Reception::Reception(int nbCooks, int replaceTime, float multiplier)
     _multiplier = multiplier;
 }
 
-void Plz::Reception::createKitchen(int idKitchen, std::shared_ptr<IPC> msg, std::shared_ptr<std::vector<Kitchen_t>> kitchens)
+void Plz::Reception::createKitchen(std::shared_ptr<int> idKitchen, std::shared_ptr<IPC> msg, std::shared_ptr<std::vector<Kitchen_t>> kitchens)
 {
     pid_t pid;
-    Kitchen_t tmp {idKitchen, 0, std::time(nullptr), 0, false};
+    idKitchen = std::make_shared<int>(*idKitchen + 1);
+    Kitchen_t tmp {*idKitchen, 0, std::time(nullptr), 0, false};
     kitchens->push_back(tmp);
-    msg->createQueue(idKitchen);
+    msg->createQueue(*idKitchen);
     pid = fork();
     if (pid == 0) {
         try {
-            Kitchen kitchen(idKitchen, _nbCooks, _replaceTime, _multiplier);
+            Kitchen kitchen(*idKitchen, _nbCooks, _replaceTime, _multiplier);
             std::_Exit(0);
         } catch (const std::exception &e) {
             std::cerr << e.what() << std::endl;
@@ -46,7 +47,7 @@ bool Plz::Reception::setLessBusy(int *less, std::shared_ptr<std::vector<Kitchen_
     return (true);
 }
 
-int Plz::Reception::getLessBusyKitchen(int idKitchen, std::shared_ptr<IPC> msg, std::shared_ptr<std::vector<Kitchen_t>> kitchens)
+int Plz::Reception::getLessBusyKitchen(std::shared_ptr<int> idKitchen, std::shared_ptr<IPC> msg, std::shared_ptr<std::vector<Kitchen_t>> kitchens)
 {
     int max = _nbCooks * 2 - 1;
     int less = max;
@@ -100,6 +101,7 @@ void Plz::Reception::manageKitchen(std::shared_ptr<std::vector<Kitchen_t>> kitch
 
     for (std::size_t i = 0; i < kitchens->size(); i++) {
         if (kitchens->at(i).busy == 0) {
+           // printf("YES_______________________\n");
             if (msg->recv_Kitchen(kitchens->at(i).nb, buf) > 0 && buf.compare("close OK") == 0) {
                 kitchens->at(i).freeCook++;
                 continue;
