@@ -79,9 +79,11 @@ void Plz::Plazza::displayStatus(void)
     if (_kitchens->size() == 0)
         std::cout << "There are currently no working kitchen" << std::endl;
     for (std::size_t i = 0; i < _kitchens->size(); i++) {
+        auto busy = _kitchens->at(i).busy >= _cooks ? _cooks;
+        auto free = _cooks - _kitchens->at(i).busy > 0 ? _cooks - _kitchens->at(i).busy : 0;
         std::cout << "Kitchen N°" << i << ":" << std::endl
         << "    " << "There are " << _cooks << " cooks in the kitchen" << std::endl
-        << "    " << _kitchens->at(i).busy << " of them are busy" << std::endl
-        << "    " << _cooks - _kitchens->at(i).busy << " of them are free" << std::endl;
+        << "    " << busy << " of them are busy" << std::endl
+        << "    " << free << " of them are free" << std::endl;
     }
 }
