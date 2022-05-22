@@ -9,9 +9,12 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <unistd.h>
+#include <fstream>
 
 #define RESET_COLOR "\e[m"
 #define MAKE_GREEN "\e[32m"
+
+void Plz::saveHistory(const std::string &str);
 
 Plz::Reception::Reception(int nbCooks, int replaceTime, float multiplier)
 {
@@ -68,12 +71,22 @@ int Plz::Reception::getLessBusyKitchen(std::shared_ptr<int> idKitchen, std::shar
     return (less);
 }
 
+void Plz::saveHistory(const std::string &str)
+{
+    std::ofstream file("history.log", std::ios::app);
+    std::time_t time = std::time(0);
+    std::tm *now = std::localtime(&time);
+    file << now->tm_mday << "/" << now->tm_mon + 1 << "/" << now->tm_year + 1900 << " " << now->tm_hour << ":" << now->tm_min << ":" << now->tm_sec << "  ->\t"
+    << str << std::endl;
+}
+
 void Plz::Reception::notifyReadyCmds(int idCmd, std::vector<std::shared_ptr<Command>> commands)
 {
     if (commands[idCmd]->isDone()) {
         std::cout << MAKE_GREEN << "Command N°" << commands[idCmd]->getId() << ": " << commands[idCmd]->getOrder()
         << " is ready" << RESET_COLOR << std::endl;
         commands.erase(commands.begin() + idCmd);
+        saveHistory("Command N°" + std::to_string(commands[idCmd]->getId()) + ": " + commands[idCmd]->getOrder() + " is ready");
     }
 }
 

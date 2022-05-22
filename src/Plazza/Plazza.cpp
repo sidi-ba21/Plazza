@@ -48,6 +48,7 @@ void Plz::Plazza::loadOrders(std::shared_ptr<Command> orders)
         _kitchens->at(idKitchen).busy++;
         this->_msg->send_Kitchen(_kitchens->at(idKitchen).nb, orders->unpack(i));
     }
+    saveHistory(orders->getOrder());
 }
 
 void Plz::Plazza::updateOrders()

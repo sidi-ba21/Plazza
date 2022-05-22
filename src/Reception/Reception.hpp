@@ -16,7 +16,10 @@
 
 namespace Plz {
 
+    void saveHistory(const std::string &str);
+
     class Reception {
+
         public:
             Reception(int nbCooks, int replaceTime, float multiplier);
             ~Reception() = default;
