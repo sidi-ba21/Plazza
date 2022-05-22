@@ -48,7 +48,7 @@ namespace Plz {
             std::unique_ptr<Reception> _reception;
             std::shared_ptr<std::vector<Kitchen_t>> _kitchens;
             int getIdCmd(int idCmd) {
-                for (int i = 0; i < commands.size(); i++) {
+                for (size_t i = 0; i < commands.size(); i++) {
                     if (commands[i]->getId() == idCmd)
                         return i;
                 }

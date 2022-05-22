@@ -41,15 +41,15 @@ namespace Plz {
         public:
             void initMsgQueue() {
                 struct mq_attr attr;
-                std::string file("/tmp/plz_send" + std::to_string(this->_id));
+                std::string file("/plazza/plz_send" + std::to_string(this->_id));
 
                 attr.mq_maxmsg = 10;
                 attr.mq_msgsize = 20;
-                _send = mq_open(file.c_str(), O_RDWR | O_CREAT, 0666, &attr);
+                _send = mq_open(file.c_str(), O_RDWR | O_CREAT, (S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH), &attr);
                 if (_send == -1)
                     throw std::runtime_error("Error: mq_open failed");
-                file.assign("/tmp/plz_receive" + std::to_string(this->_id));
-                _receive = mq_open(file.c_str(), O_RDWR | O_CREAT | O_NONBLOCK, 0666, &attr);
+                file.assign("/plazza/plz_receive" + std::to_string(this->_id));
+                _receive = mq_open(file.c_str(), O_RDWR | O_CREAT | O_NONBLOCK, (S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH), 0666, &attr);
                 if (_receive == -1)
                     throw std::runtime_error("Error: mq_open failed");
             }

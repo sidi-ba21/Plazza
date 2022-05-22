@@ -21,6 +21,7 @@ namespace Plz {
     class Shell {
         public:
             Shell(int ac, char **av) {
+                (void)ac;
                 _plazza = std::make_unique<Plz::Plazza>(av);
                  shell_run(); 
             };

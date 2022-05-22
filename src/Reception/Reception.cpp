@@ -37,7 +37,7 @@ void Plz::Reception::createKitchen(int idKitchen, std::shared_ptr<IPC> msg, std:
 
 bool Plz::Reception::setLessBusy(int *less, std::shared_ptr<std::vector<Kitchen_t>> kitchens)
 {
-    for (int i = 0; i < kitchens->size(); i++) {
+    for (std::size_t i = 0; i < kitchens->size(); i++) {
         if (kitchens->at(i).busy == *less) {
             *less = i;
             return (false);
@@ -52,7 +52,7 @@ int Plz::Reception::getLessBusyKitchen(int idKitchen, std::shared_ptr<IPC> msg, 
     int less = max;
     bool newKitchen = true;
 
-    for (int i = 0; i < kitchens->size(); i++) {
+    for (std::size_t i = 0; i < kitchens->size(); i++) {
         if (!kitchens->at(i).isFree && kitchens->at(i).busy < max)
             less = kitchens->at(i).busy;
     }
@@ -87,7 +87,7 @@ void Plz::Reception::manageKitchen(std::shared_ptr<std::vector<Kitchen_t>> kitch
 {
     std::string buf;
 
-    for (int i = 0; i < kitchens->size(); i++) {
+    for (std::size_t i = 0; i < kitchens->size(); i++) {
         std::time_t now = std::time(nullptr);
         if (now - kitchens->at(i).time > 5 && !kitchens->at(i).isFree && kitchens->at(i).busy == 0) {
             // do it nbCooks times
@@ -98,7 +98,7 @@ void Plz::Reception::manageKitchen(std::shared_ptr<std::vector<Kitchen_t>> kitch
         }
     }
 
-    for (int i = 0; i < kitchens->size(); i++) {
+    for (std::size_t i = 0; i < kitchens->size(); i++) {
         if (kitchens->at(i).busy == 0) {
             if (msg->recv_Kitchen(kitchens->at(i).nb, buf) > 0 && buf.compare("close OK") == 0) {
                 kitchens->at(i).freeCook++;

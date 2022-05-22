@@ -36,18 +36,19 @@ class IPC {
         void createQueue(int idKitchen) {
             mqd_t queue;
             struct mq_attr attr;
-            std::string file("/tmp/plz_send" + std::to_string(this->_nbQueues + 1));
-            
+            std::string file("/plazza/plz_send" + std::to_string(this->_nbQueues + 1));
+            std::cout << "IPC open" << std::endl;
             attr.mq_maxmsg = 10;
             attr.mq_msgsize = 20;
             mq_unlink(file.c_str());
-            queue = mq_open(file.c_str(), O_RDWR | O_CREAT, PMODE, &attr);
+            queue = mq_open(file.c_str(), O_RDWR | O_CREAT, (S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH), &attr);
             if (queue == -1)
                 throw std::runtime_error("Error: mq_open failed");
             _send.push_back(std::make_pair(idKitchen, queue));
-            file.assign("/tmp/plz_receive" + std::to_string(this->_nbQueues + 1));
+            std::cout << "IPC open2" << std::endl;
+            file.assign("/plazza/plz_receive" + std::to_string(this->_nbQueues + 1));
             mq_unlink(file.c_str());
-            queue = mq_open(file.c_str(), O_RDWR | O_CREAT | O_NONBLOCK, PMODE, &attr);
+            queue = mq_open(file.c_str(), O_RDWR | O_CREAT | O_NONBLOCK, (S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH), &attr);
             if (queue == -1)
                 throw std::runtime_error("Error: mq_open failed");
             _receive.push_back(std::make_pair(idKitchen, queue));

@@ -67,7 +67,7 @@ int Plz::Shell::userActivity()
         std::perror("select");
         exit(84);
     } else if (activity) {
-        if (FD_ISSET(STDIN_FILENO + 1, &readfds)) {
+        if (FD_ISSET(STDIN_FILENO, &readfds)) {
             if (!std::getline(std::cin, line))
                 return (-1);
             _line.assign(line);
@@ -101,7 +101,6 @@ void Plz::Shell::shell_run()
                     _plazza->eraseNewCommandId();
                 }
             }
-            std::cout << "> " << std::flush;
         }
     }
 }
