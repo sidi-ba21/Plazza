@@ -58,7 +58,7 @@ namespace Plz {
             }
 
              bool isDone() const {
-                if (_orders.empty())
+                if (_orders.size() == 0)
                     return true;
                 return false;
             };

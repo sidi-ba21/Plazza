@@ -21,13 +21,13 @@ void Plz::Reception::createKitchen(std::shared_ptr<int> idKitchen, std::shared_p
 {
     pid_t pid;
     idKitchen = std::make_shared<int>(*idKitchen + 1);
-    Kitchen_t tmp {*idKitchen, 0, std::time(nullptr), 0, false};
-    kitchens->push_back(tmp);
+    Kitchen_t newKitchen {*idKitchen, 0, std::time(nullptr), 0, false};
+    kitchens->push_back(newKitchen);
     msg->createQueue(*idKitchen);
     pid = fork();
     if (pid == 0) {
         try {
-            Kitchen kitchen(*idKitchen, _nbCooks, _replaceTime, _multiplier);
+            Kitchen kitchen(*idKitchen, _nbCooks, _multiplier, _replaceTime);
             std::_Exit(0);
         } catch (const std::exception &e) {
             std::cerr << e.what() << std::endl;
@@ -79,9 +79,12 @@ void Plz::Reception::CloseKitchen(std::shared_ptr<std::vector<Kitchen_t>> kitche
 
     if (size == -1)
         return;
+//    printf("Size kitchen: %d\n", size);
     for (; size >= 0; size--)
-        if (kitchens->at(size).freeCook == _nbCooks)
+        if (kitchens->at(size).freeCook == _nbCooks) {
             kitchens->erase(kitchens->begin() + size);
+            std::cout << "closeKitchen" << std::endl;
+        }
 }
 
 void Plz::Reception::manageKitchen(std::shared_ptr<std::vector<Kitchen_t>> kitchens, std::shared_ptr<IPC> msg)
@@ -90,8 +93,11 @@ void Plz::Reception::manageKitchen(std::shared_ptr<std::vector<Kitchen_t>> kitch
 
     for (std::size_t i = 0; i < kitchens->size(); i++) {
         std::time_t now = std::time(nullptr);
+ //       std::cout << "now " << now << "--------- elapsed " << now - kitchens->at(i).time << " busy " << kitchens->at(i).busy <<
+ //       " bool " << kitchens->at(i).isFree << std::endl;
         if (now - kitchens->at(i).time > 5 && !kitchens->at(i).isFree && kitchens->at(i).busy == 0) {
             // do it nbCooks times
+         //   std::cout << "it " << i << (" Kitchen N°" + std::to_string(kitchens->at(i).nb) + " send") << std::endl;
             for (int j = 0; j < _nbCooks; j++) {
                 msg->send_Kitchen(kitchens->at(i).nb, "close");
                 kitchens->at(i).isFree = true;
@@ -103,6 +109,7 @@ void Plz::Reception::manageKitchen(std::shared_ptr<std::vector<Kitchen_t>> kitch
         if (kitchens->at(i).busy == 0) {
            // printf("YES_______________________\n");
             if (msg->recv_Kitchen(kitchens->at(i).nb, buf) > 0 && buf.compare("close OK") == 0) {
+          //      printf("received kitchen\n");
                 kitchens->at(i).freeCook++;
                 continue;
             }

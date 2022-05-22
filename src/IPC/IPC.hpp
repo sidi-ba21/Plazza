@@ -35,10 +35,10 @@ class IPC {
                 }
         };
         void createQueue(int idKitchen) {
+            std::string file("/plz" + std::to_string(this->_nbQueues + 1) + "SEND");
             mqd_t queue;
             struct mq_attr attr;
-            std::string file("/plz" + std::to_string(this->_nbQueues + 1) + "SEND");
-            std::cout << "IPC open : " << file << std::endl;
+          //  std::cout << "IPC open : " << file << std::endl;
             attr.mq_maxmsg = 10;
             attr.mq_msgsize = 20;
             mq_unlink(file.c_str());
@@ -47,7 +47,7 @@ class IPC {
                 throw MsQueues("Error: mq_open failed");
             _send.push_back(std::make_pair(idKitchen, queue));
             file.assign("/plz" + std::to_string(this->_nbQueues + 1) + "RECEIVE");
-            std::cout << "IPC open2 : " << file << std::endl;
+           // std::cout << "IPC open2 : " << file << std::endl;
             mq_unlink(file.c_str());
             queue = mq_open(file.c_str(), O_RDWR | O_CREAT | O_NONBLOCK, (S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH), &attr);
             if (queue == -1)
