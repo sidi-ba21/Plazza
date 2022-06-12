@@ -13,6 +13,7 @@
 #include <time.h>
 #include <iostream>
 #include "../Error.hpp"
+#include "encapsMsgQueues.hpp"
 
     #define PMODE 0666
 
@@ -32,49 +33,45 @@ class IPC {
         IPC() { _nbQueues = 0; };
         ~IPC() { 
             for (int i = 0; i < _nbQueues; i++) {
-                mq_close(_send[i].second);
+                _queues.Close(_send[i].second);
                 }
             for (int i = 0; i < _nbQueues; i++) {
-                mq_close(_receive[i].second);
+                _queues.Close(_receive[i].second);
                 }
         };
         void createQueue(int idKitchen) {
             std::string file("/plz" + std::to_string(this->_nbQueues + 1) + "SEND");
             mqd_t queue;
-            struct mq_attr attr;
-          //  std::cout << "IPC open : " << file << std::endl;
-            attr.mq_maxmsg = 10;
-            attr.mq_msgsize = 100;
-            mq_unlink(file.c_str());
-            queue = mq_open(file.c_str(), O_RDWR | O_CREAT, (S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH), &attr);
+            _queues.Unlink(file);
+            queue = _queues.Open(file, 1);
             if (queue == -1)
                 throw MsQueues("Error: mq_open failed");
             _send.push_back(std::make_pair(idKitchen, queue));
             file.assign("/plz" + std::to_string(this->_nbQueues + 1) + "RECEIVE");
            // std::cout << "IPC open2 : " << file << std::endl;
-            mq_unlink(file.c_str());
-            queue = mq_open(file.c_str(), O_RDWR | O_CREAT | O_NONBLOCK, (S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH), &attr);
+            _queues.Unlink(file);
+            queue = _queues.Open(file, 0);
             if (queue == -1)
                 throw MsQueues("Error: mq_open failed");
             _receive.push_back(std::make_pair(idKitchen, queue));
             file.assign("/plz" + std::to_string(this->_nbQueues + 1) + "STATUS");
-            mq_unlink(file.c_str());
-            queue = mq_open(file.c_str(), O_RDWR | O_CREAT, (S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH), &attr);
+            _queues.Unlink(file);
+            queue = _queues.Open(file, 1);
             if (queue == -1)
                 throw MsQueues("Error: mq_open failed");
             _status.push_back(std::make_pair(idKitchen, queue));
             file.assign("/plz" + std::to_string(this->_nbQueues + 1) + "STOCK");
-            mq_unlink(file.c_str());
-            queue = mq_open(file.c_str(), O_RDWR | O_CREAT | O_NONBLOCK, (S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH), &attr);
+            _queues.Unlink(file);
+            queue = _queues.Open(file, 0);
             if (queue == -1)
                 throw MsQueues("Error: mq_open failed");
             _stock.push_back(std::make_pair(idKitchen, queue));
             this->_nbQueues++;
         };
-
     protected:
     private:
         int _nbQueues;
+        MsgQueues _queues;
         std::vector<std::pair<int, mqd_t>> _send;
         std::vector<std::pair<int, mqd_t>> _receive;
         std::vector<std::pair<int, mqd_t>> _status;

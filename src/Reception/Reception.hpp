@@ -13,6 +13,7 @@
 #include "../IPC/IPC.hpp"
 #include "../Kitchen/Kitchen.hpp"
 #include "Command.hpp"
+#include "fork.hpp"
 
 namespace Plz {
 
@@ -35,6 +36,8 @@ namespace Plz {
             int _nbCooks;
             int _replaceTime;
             float _multiplier;
+            Fork _fork;
+
     };
 }
 

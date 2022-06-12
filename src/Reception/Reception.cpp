@@ -32,7 +32,7 @@ void Plz::Reception::createKitchen(std::shared_ptr<int> idKitchen, std::shared_p
 //    Kitchen_t newKitchen {*idKitchen, 0, std::time(nullptr), 0, false};
     kitchens->push_back({*idKitchen, 0, std::time(nullptr), 0, false});
     msg->createQueue(*idKitchen);
-    pid = fork();
+    pid = _fork.doFork();
     if (pid == 0) {
         try {
             Kitchen kitchen(*idKitchen, _nbCooks, _multiplier, _replaceTime);
@@ -100,8 +100,10 @@ void Plz::Reception::CloseKitchen(std::shared_ptr<std::vector<Kitchen_t>> kitche
     for (; size >= 0; size--)
         if (kitchens->at(size).freeCook == _nbCooks) {
             kitchens->erase(kitchens->begin() + size);
+            _fork.waitFork();
         //  std::cout << "closeKitchen" << std::endl;
         }
+//    wait(NULL);
 }
 
 void Plz::Reception::manageKitchen(std::shared_ptr<std::vector<Kitchen_t>> kitchens, std::shared_ptr<IPC> msg)

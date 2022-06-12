@@ -43,22 +43,18 @@ namespace Plz {
         public:
             void initMsgQueue() {
                 std::string file("/plz" + std::to_string(this->_id) + "SEND");
-                struct mq_attr attr;
-               // std::cout << "IPC open3 : " << file << std::endl;
-                attr.mq_maxmsg = 10;
-                attr.mq_msgsize = 100;
-                _send = mq_open(file.c_str(), O_RDWR | O_CREAT, (S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH), &attr);
+                _send = _queues.Open(file, 1);
                 if (_send == -1) {
                     throw MsQueues("Error: mq_open failed");
                 }
                 file.assign("/plz" + std::to_string(this->_id) + "RECEIVE");
                // std::cout << "IPC open4 : " << file << std::endl;
-                _receive = mq_open(file.c_str(), O_RDWR | O_CREAT | O_NONBLOCK, (S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH), &attr);
+                _receive = _queues.Open(file, 0);
                 if (_receive == -1) {
                     throw MsQueues("Error: mq_open failed");
                 }
                 file.assign("/plz" + std::to_string(this->_id) + "STATUS");
-                _status = mq_open(file.c_str(), O_RDWR | O_CREAT, (S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH), &attr);
+                _status = _queues.Open(file, 1);
                 if (_status == -1) {
                     throw MsQueues("Error: mq_open failed");
                 }
@@ -74,7 +70,6 @@ namespace Plz {
                 for (int i = 0; i < _nbCooks; i++)
                     _pool[i].join();
                 std::_Exit(0);
-//                threadPool();
             }
             void threadPool() {
                 for (int i = 0; i < _nbCooks; i++)
@@ -92,6 +87,7 @@ namespace Plz {
             mqd_t _send;
             mqd_t _receive;
             mqd_t _status;
+            MsgQueues _queues;
     };
 }
 

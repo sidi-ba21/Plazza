@@ -9,8 +9,10 @@ SRC		=	src/main.cpp				\
 			src/Shell/Shell.cpp			\
 			src/Plazza/Plazza.cpp		\
 			src/IPC/IPC.cpp				\
+			src/IPC/encapsMsgQueues.cpp	\
 			src/Kitchen/Kitchen.cpp		\
 			src/Reception/Reception.cpp	\
+			src/Reception/fork.cpp		\
 
 CXXFLAGS	=	-std=c++20 -Wall -Wextra -I include
 
