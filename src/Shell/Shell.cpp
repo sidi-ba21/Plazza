@@ -14,6 +14,27 @@
 #include <unistd.h>
 
 
+// if char == ';' && next char == space then remove space
+// if char == ';' && previous char == space then remove space
+std::string cleanString(std::string cmd)
+{
+    std::stringstream ss(cmd);
+    std::string tmp;
+    std::string result;
+    while (std::getline(ss, tmp, ';')) {
+        if (tmp.size() > 0) {
+            if (tmp[0] == ' ')
+                tmp.erase(0, 1);
+            if (tmp[tmp.size() - 1] == ' ')
+                tmp.erase(tmp.size() - 1, 1);
+            if (result.size() > 0)
+                result += ";";
+            result += tmp;
+        }
+    }
+    return (result);
+}
+
 std::vector<std::string> split(const std::string &str, char delim)
 {
     std::vector<std::string> res;
@@ -70,7 +91,7 @@ int Plz::Shell::userActivity()
         if (FD_ISSET(STDIN_FILENO, &readfds)) {
             if (!std::getline(std::cin, line))
                 return (-1);
-            _line.assign(line);
+            _line.assign(cleanString(line));
             return (1);
         }
     } else
